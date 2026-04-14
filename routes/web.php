@@ -1,20 +1,66 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\BahanBakuController;
+use App\Http\Controllers\KategoriMenuController;
+use App\Http\Controllers\MenuMakananController;
+use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\AsetTetapController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\KaryawanController;
 
-Route::get('/', function () {
-    return view('welcome');
+// Guest routes
+Route::middleware('guest')->group(function () {
+    Route::get('login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('login', [AuthController::class, 'login']);
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+// Authenticated routes
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-require __DIR__.'/auth.php';
+    // Dashboard
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    // Bahan Baku
+    Route::resource('bahan-baku', BahanBakuController::class);
+
+    // Kategori Menu
+    Route::resource('kategori-menu', KategoriMenuController::class)->except(['show']);
+
+    // Menu Makanan
+    Route::resource('menu-makanan', MenuMakananController::class);
+
+    // Transaksi Penjualan
+    Route::resource('transaksi', TransaksiController::class)->only(['index', 'create', 'store', 'show']);
+    Route::get('transaksi/{transaksi}/struk', [TransaksiController::class, 'struk'])->name('transaksi.struk');
+
+    // Stock
+    Route::prefix('stock')->name('stock.')->group(function () {
+        Route::get('movement', [StockController::class, 'movement'])->name('movement');
+        Route::get('opname', [StockController::class, 'opname'])->name('opname');
+        Route::post('opname', [StockController::class, 'storeOpname'])->name('opname.store');
+    });
+
+    // Aset Tetap
+    Route::resource('aset-tetap', AsetTetapController::class);
+    Route::post('aset-tetap/{asetTetap}/penyusutan', [AsetTetapController::class, 'penyusutan'])->name('aset-tetap.penyusutan');
+    Route::post('aset-tetap/{asetTetap}/lepas', [AsetTetapController::class, 'lepas'])->name('aset-tetap.lepas');
+
+    // Laporan
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+        Route::get('harian', [LaporanController::class, 'harian'])->name('harian');
+        Route::get('bulanan', [LaporanController::class, 'bulanan'])->name('bulanan');
+        Route::get('stok', [LaporanController::class, 'stok'])->name('stok');
+        Route::get('neraca', [LaporanController::class, 'neraca'])->name('neraca');
+        Route::get('labarugi', [LaporanController::class, 'labarugi'])->name('labarugi');
+    });
+
+    // Karyawan (admin only)
+    Route::resource('karyawan', KaryawanController::class);
+
+    // Logout
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+});

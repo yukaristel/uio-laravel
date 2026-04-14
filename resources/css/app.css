@@ -1,3 +1,285 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+    --uio-primary: #7C9E87;
+    --uio-primary-dark: #5E8268;
+    --uio-accent: #E8A598;
+    --uio-accent-dark: #D4857A;
+    --uio-bg: #FAF7F2;
+    --uio-sidebar: #FFFDF9;
+    --uio-text: #4A4540;
+    --uio-text-muted: #9E948E;
+    --uio-border: #E8E2DA;
+    --uio-success: #8BB899;
+    --uio-warning: #E8C98A;
+    --uio-danger: #E89898;
+    --uio-info: #98C0E8;
+    --uio-white: #FFFFFF;
+    --uio-card-shadow: 0 2px 12px rgba(124,158,135,0.10);
+}
+
+/* Base */
+body {
+    background-color: var(--uio-bg);
+    color: var(--uio-text);
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.92rem;
+}
+
+a {
+    color: var(--uio-primary-dark);
+    text-decoration: none;
+}
+
+    a:hover {
+        color: var(--uio-primary);
+    }
+
+/* Navbar */
+.navbar-uio {
+    background-color: var(--uio-primary);
+    border-bottom: 2px solid var(--uio-primary-dark);
+    box-shadow: 0 2px 8px rgba(94,130,104,0.15);
+}
+
+    .navbar-uio .navbar-brand {
+        color: var(--uio-white) !important;
+        font-weight: 700;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .navbar-uio .nav-link {
+        color: rgba(255,255,255,0.88) !important;
+        font-weight: 500;
+        padding: 0.5rem 0.85rem;
+        border-radius: 6px;
+        transition: background 0.2s;
+    }
+
+        .navbar-uio .nav-link:hover,
+        .navbar-uio .nav-link.active {
+            background-color: rgba(255,255,255,0.18);
+            color: var(--uio-white) !important;
+        }
+
+    .navbar-uio .dropdown-menu {
+        border: 1px solid var(--uio-border);
+        border-radius: 10px;
+        box-shadow: var(--uio-card-shadow);
+        padding: 0.4rem;
+    }
+
+    .navbar-uio .dropdown-item {
+        border-radius: 6px;
+        color: var(--uio-text);
+        padding: 0.45rem 0.85rem;
+        font-size: 0.88rem;
+    }
+
+        .navbar-uio .dropdown-item:hover {
+            background-color: var(--uio-bg);
+            color: var(--uio-primary-dark);
+        }
+
+/* Cards */
+.card {
+    border: 1px solid var(--uio-border);
+    border-radius: 12px;
+    box-shadow: var(--uio-card-shadow);
+    background-color: var(--uio-white);
+}
+
+.card-header {
+    background-color: var(--uio-sidebar);
+    border-bottom: 1px solid var(--uio-border);
+    border-radius: 12px 12px 0 0 !important;
+    padding: 0.85rem 1.2rem;
+    font-weight: 600;
+    color: var(--uio-text);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--uio-primary);
+    border-color: var(--uio-primary);
+    color: var(--uio-white);
+}
+
+    .btn-primary:hover {
+        background-color: var(--uio-primary-dark);
+        border-color: var(--uio-primary-dark);
+    }
+
+.btn-accent {
+    background-color: var(--uio-accent);
+    border-color: var(--uio-accent);
+    color: var(--uio-white);
+}
+
+    .btn-accent:hover {
+        background-color: var(--uio-accent-dark);
+        border-color: var(--uio-accent-dark);
+        color: var(--uio-white);
+    }
+
+.btn-outline-primary {
+    color: var(--uio-primary-dark);
+    border-color: var(--uio-primary);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--uio-primary);
+        border-color: var(--uio-primary);
+        color: var(--uio-white);
+    }
+
+/* Tables */
+.table {
+    color: var(--uio-text);
+}
+
+    .table thead th {
+        background-color: var(--uio-bg);
+        color: var(--uio-text-muted);
+        font-weight: 600;
+        font-size: 0.82rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid var(--uio-border);
+    }
+
+    .table tbody tr:hover {
+        background-color: #F5F1EB;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+        border-color: var(--uio-border);
+    }
+
+/* Badges */
+.badge-uio-success {
+    background-color: #D4ECD9;
+    color: #3A7A4A;
+}
+
+.badge-uio-warning {
+    background-color: #F5E6C0;
+    color: #8A6A20;
+}
+
+.badge-uio-danger {
+    background-color: #F5D4D4;
+    color: #8A3A3A;
+}
+
+.badge-uio-info {
+    background-color: #D4E6F5;
+    color: #2A5A8A;
+}
+
+/* Stat Cards (Dashboard) */
+.stat-card {
+    border-radius: 14px;
+    padding: 1.2rem 1.4rem;
+    border: none;
+    box-shadow: var(--uio-card-shadow);
+}
+
+    .stat-card .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--uio-text);
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.8rem;
+        color: var(--uio-text-muted);
+        font-weight: 500;
+    }
+
+/* Forms */
+.form-control, .form-select {
+    border-color: var(--uio-border);
+    border-radius: 8px;
+    color: var(--uio-text);
+    background-color: var(--uio-white);
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--uio-primary);
+        box-shadow: 0 0 0 0.2rem rgba(124,158,135,0.20);
+    }
+
+.form-label {
+    font-weight: 500;
+    color: var(--uio-text);
+    font-size: 0.88rem;
+}
+
+/* Alerts */
+.alert-success {
+    background-color: #D4ECD9;
+    border-color: #B8DEC0;
+    color: #2A5A35;
+}
+
+.alert-danger {
+    background-color: #F5D4D4;
+    border-color: #E8B8B8;
+    color: #7A2A2A;
+}
+
+.alert-warning {
+    background-color: #F5E6C0;
+    border-color: #E8D4A0;
+    color: #7A5A20;
+}
+
+/* Page header */
+.page-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--uio-border);
+}
+
+    .page-header h2 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--uio-text);
+        margin: 0;
+    }
+
+/* Pagination */
+.pagination .page-link {
+    color: var(--uio-primary-dark);
+    border-color: var(--uio-border);
+    border-radius: 8px !important;
+    margin: 0 2px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--uio-primary);
+    border-color: var(--uio-primary);
+}
+
+/* Misc */
+.text-muted {
+    color: var(--uio-text-muted) !important;
+}
+
+.divider {
+    border-color: var(--uio-border);
+}
