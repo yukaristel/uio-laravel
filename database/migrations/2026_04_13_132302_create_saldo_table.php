@@ -6,20 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('saldo', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->string('id', 50)->primary();
+            $table->string('kode_akun', 50);
+            $table->bigInteger('tahun');
+            $table->bigInteger('bulan');
+            $table->bigInteger('debet')->nullable();
+            $table->bigInteger('kredit')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('saldo');
