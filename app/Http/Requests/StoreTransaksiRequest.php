@@ -15,8 +15,9 @@ class StoreTransaksiRequest extends FormRequest
     {
         return [
             'tanggal_transaksi'            => 'required|date',
-            'metode_pembayaran'            => 'required|in:tunai,debit,qris,transfer',
-            'uang_bayar'                   => 'required|numeric|min:0',
+            'metode_pembayaran'            => 'required|in:tunai,debit,qris,transfer,gopay,grab,shopeepay',
+            'uang_bayar'                   => 'required_if:metode_pembayaran,tunai|nullable|numeric|min:0',
+            'nominal_diterima'             => 'required_unless:metode_pembayaran,tunai|nullable|numeric|min:0',
             'details'                      => 'required|array|min:1',
             'details.*.menu_id'            => 'required|exists:menu_makanan,id',
             'details.*.jumlah'             => 'required|integer|min:1',
@@ -28,13 +29,14 @@ class StoreTransaksiRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'tanggal_transaksi.required'    => 'Tanggal transaksi wajib diisi',
-            'metode_pembayaran.required'    => 'Metode pembayaran wajib dipilih',
-            'uang_bayar.required'           => 'Uang bayar wajib diisi',
-            'details.required'              => 'Item transaksi wajib diisi',
-            'details.min'                   => 'Minimal 1 item transaksi',
-            'details.*.menu_id.required'    => 'Menu wajib dipilih',
-            'details.*.jumlah.required'     => 'Jumlah wajib diisi',
+            'tanggal_transaksi.required'      => 'Tanggal transaksi wajib diisi',
+            'metode_pembayaran.required'      => 'Metode pembayaran wajib dipilih',
+            'uang_bayar.required_if'          => 'Uang bayar wajib diisi untuk pembayaran tunai',
+            'nominal_diterima.required_unless'=> 'Nominal diterima wajib diisi untuk pembayaran non-tunai',
+            'details.required'                => 'Item transaksi wajib diisi',
+            'details.min'                     => 'Minimal 1 item transaksi',
+            'details.*.menu_id.required'      => 'Menu wajib dipilih',
+            'details.*.jumlah.required'       => 'Jumlah wajib diisi',
             'details.*.harga_satuan.required' => 'Harga satuan wajib diisi',
         ];
     }

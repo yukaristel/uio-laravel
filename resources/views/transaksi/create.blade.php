@@ -78,19 +78,44 @@
                     <div class="row g-3">
                         <div class="col-md-6">
                             <label class="form-label">Metode Pembayaran <span class="text-danger">*</span></label>
-                            <select name="metode_pembayaran" class="form-select" required>
-                                <option value="tunai">Tunai</option>
-                                <option value="qris">QRIS</option>
-                                <option value="debit">Debit</option>
-                                <option value="transfer">Transfer</option>
+                            <select name="metode_pembayaran" class="form-select" id="metodePembayaran" required>
+                                <optgroup label="Tunai">
+                                    <option value="tunai">💵 Tunai</option>
+                                </optgroup>
+                                <optgroup label="Kasir Digital">
+                                    <option value="qris">📱 QRIS</option>
+                                    <option value="debit">💳 Debit</option>
+                                    <option value="transfer">🏦 Transfer</option>
+                                </optgroup>
+                                <optgroup label="Platform Online">
+                                    <option value="gopay">🟢 GoPay</option>
+                                    <option value="grab">🟢 GrabFood</option>
+                                    <option value="shopeepay">🟠 ShopeePay</option>
+                                </optgroup>
                             </select>
                         </div>
-                        <div class="col-md-6">
+
+                        {{-- Tunai --}}
+                        <div class="col-md-6" id="sectionTunai">
                             <label class="form-label">Uang Bayar <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text" style="background: var(--uio-bg); border-color: var(--uio-border);">Rp</span>
                                 <input type="number" name="uang_bayar" id="uangBayar"
-                                       class="form-control" value="0" min="0" required>
+                                       class="form-control" value="0" min="0">
+                            </div>
+                        </div>
+
+                        {{-- Non-tunai --}}
+                        <div class="col-md-6" id="sectionNonTunai" style="display:none;">
+                            <label class="form-label">Nominal Diterima <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text" style="background: var(--uio-bg); border-color: var(--uio-border);">Rp</span>
+                                <input type="number" name="nominal_diterima" id="nominalDiterima"
+                                       class="form-control" value="0" min="0">
+                            </div>
+                            <div class="form-text" style="color: var(--uio-text-muted); font-size:0.8rem;">
+                                <i class="bi bi-info-circle"></i>
+                                Isi nominal yang benar-benar diterima (setelah diskon platform)
                             </div>
                         </div>
                     </div>
@@ -103,7 +128,6 @@
                             <i class="bi bi-x-circle"></i> Batal
                         </a>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -134,8 +158,10 @@
                         <td class="text-end" id="dispUangBayar">Rp 0</td>
                     </tr>
                     <tr>
-                        <td style="color: var(--uio-text-muted);">Kembalian</td>
-                        <td class="text-end"><strong id="kembalian" style="color: var(--uio-primary-dark);">Rp 0</strong></td>
+                        <td style="color: var(--uio-text-muted);"  id="labelKembalian">Kembalian</td>
+                        <td class="text-end">
+                            <strong id="kembalian" style="color: var(--uio-primary-dark);">Rp 0</strong>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -154,6 +180,10 @@ function formatRp(val) {
     return 'Rp ' + parseInt(val || 0).toLocaleString('id-ID');
 }
 
+function isTunai() {
+    return document.getElementById('metodePembayaran').value === 'tunai';
+}
+
 function hitungTotal() {
     let totalHarga = 0, totalModal = 0;
 
@@ -165,15 +195,36 @@ function hitungTotal() {
         totalModal  += jumlah * modal;
     });
 
-    const uangBayar   = parseInt(document.getElementById('uangBayar').value) || 0;
-    const keuntungan  = totalHarga - totalModal;
-    const kembalian   = uangBayar - totalHarga;
+    // Update ringkasan
+    document.getElementById('totalHarga').textContent = formatRp(totalHarga);
+    document.getElementById('totalModal').textContent = formatRp(totalModal);
 
-    document.getElementById('totalHarga').textContent     = formatRp(totalHarga);
-    document.getElementById('totalModal').textContent     = formatRp(totalModal);
-    document.getElementById('totalKeuntungan').textContent= formatRp(keuntungan);
-    document.getElementById('dispUangBayar').textContent  = formatRp(uangBayar);
-    document.getElementById('kembalian').textContent      = formatRp(kembalian);
+    if (isTunai()) {
+        const uangBayar  = parseInt(document.getElementById('uangBayar').value) || 0;
+        const keuntungan = totalHarga - totalModal;
+        const kembalian  = uangBayar - totalHarga;
+
+        document.getElementById('totalKeuntungan').textContent = formatRp(keuntungan);
+        document.getElementById('dispUangBayar').textContent   = formatRp(uangBayar);
+        document.getElementById('kembalian').textContent       = formatRp(kembalian);
+        document.getElementById('labelKembalian').textContent  = 'Kembalian';
+    } else {
+        const nominalDiterima = parseInt(document.getElementById('nominalDiterima').value) || 0;
+        const keuntungan      = nominalDiterima - totalModal;
+
+        document.getElementById('totalHarga').textContent      = formatRp(nominalDiterima);
+        document.getElementById('totalKeuntungan').textContent = formatRp(keuntungan);
+        document.getElementById('dispUangBayar').textContent   = formatRp(nominalDiterima);
+        document.getElementById('kembalian').textContent       = '-';
+        document.getElementById('labelKembalian').textContent  = 'Kembalian';
+    }
+}
+
+function toggleMetode() {
+    const tunai = isTunai();
+    document.getElementById('sectionTunai').style.display    = tunai ? 'block' : 'none';
+    document.getElementById('sectionNonTunai').style.display = tunai ? 'none' : 'block';
+    hitungTotal();
 }
 
 function bindRow(row) {
@@ -194,10 +245,9 @@ function bindRow(row) {
     });
 }
 
-// Bind existing row
+// Init
 document.querySelectorAll('.item-row').forEach(bindRow);
 
-// Tambah item
 document.getElementById('btnTambahItem').addEventListener('click', function() {
     const template = document.querySelector('.item-row').cloneNode(true);
     template.querySelectorAll('select, input').forEach(el => {
@@ -212,6 +262,8 @@ document.getElementById('btnTambahItem').addEventListener('click', function() {
     itemIndex++;
 });
 
+document.getElementById('metodePembayaran').addEventListener('change', toggleMetode);
 document.getElementById('uangBayar').addEventListener('input', hitungTotal);
+document.getElementById('nominalDiterima').addEventListener('input', hitungTotal);
 </script>
 @endpush
