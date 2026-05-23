@@ -29,6 +29,11 @@ class User extends Authenticatable
         return 'username';
     }
 
+    public function getAuthIdentifier()
+    {
+        return $this->id;
+    }
+
     protected function casts(): array
     {
         return [

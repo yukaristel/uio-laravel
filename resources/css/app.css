@@ -2,21 +2,21 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
-    --uio-primary: #7C9E87;
-    --uio-primary-dark: #5E8268;
-    --uio-accent: #E8A598;
-    --uio-accent-dark: #D4857A;
-    --uio-bg: #FAF7F2;
-    --uio-sidebar: #FFFDF9;
-    --uio-text: #4A4540;
-    --uio-text-muted: #9E948E;
-    --uio-border: #E8E2DA;
-    --uio-success: #8BB899;
-    --uio-warning: #E8C98A;
-    --uio-danger: #E89898;
-    --uio-info: #98C0E8;
+    --uio-primary: #8B7EC8;
+    --uio-primary-dark: #6B5EA8;
+    --uio-accent: #C89EC4;
+    --uio-accent-dark: #A87EA4;
+    --uio-bg: #F7F5FF;
+    --uio-sidebar: #FDFCFF;
+    --uio-text: #3D3650;
+    --uio-text-muted: #9890B0;
+    --uio-border: #E4E0F0;
+    --uio-success: #9EC8A8;
+    --uio-warning: #C8B89E;
+    --uio-danger: #C89E9E;
+    --uio-info: #9EC0C8;
     --uio-white: #FFFFFF;
-    --uio-card-shadow: 0 2px 12px rgba(124,158,135,0.10);
+    --uio-card-shadow: 0 2px 12px rgba(139,126,200,0.10);
 }
 
 /* Base */

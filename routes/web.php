@@ -11,6 +11,8 @@ use App\Http\Controllers\AsetTetapController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\JurnalController;
+use App\Http\Controllers\PembelianBahanController;
 
 // Guest routes
 Route::middleware('guest')->group(function () {
@@ -26,6 +28,9 @@ Route::middleware('auth')->group(function () {
 
     // Bahan Baku
     Route::resource('bahan-baku', BahanBakuController::class);
+
+    // Pembelian Bahan
+    Route::resource('pembelian-bahan', PembelianBahanController::class)->only(['index', 'create', 'store', 'show']);
 
     // Kategori Menu
     Route::resource('kategori-menu', KategoriMenuController::class)->except(['show']);
@@ -60,6 +65,9 @@ Route::middleware('auth')->group(function () {
 
     // Karyawan (admin only)
     Route::resource('karyawan', KaryawanController::class);
+
+    // Jurnal Umum
+    Route::resource('jurnal', JurnalController::class)->except(['show']);
 
     // Logout
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');

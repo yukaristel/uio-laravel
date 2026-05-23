@@ -1,58 +1,90 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Progress Migrasi UIO — PHP Vanilla → Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Phase 1: Setup & Preparation ✅
+- [x] Laragon terinstall (Nginx 1.27.3, MySQL 8.4.3, PHP 8.3.26)
+- [x] Node.js v22.12.0 + npm 10.9.0 terinstall
+- [x] Composer 2.8.4 terinstall
+- [x] Laravel 13 project dibuat (`composer create-project laravel/laravel .`)
+- [x] Konfigurasi `.env` (DB_DATABASE=uio_laravel, SESSION_DRIVER=file)
+- [x] Generate APP_KEY (`php artisan key:generate`)
+- [x] Database `uio_laravel` dibuat di MySQL
+- [x] Koneksi database berhasil
+- [x] Authentication scaffolding terpasang (Breeze + Blade)
+- [x] Frontend dependencies terinstall (`npm install && npm run build`)
+- [x] Package spatie/laravel-permission terinstall & migrated
+- [x] Laravel berjalan di http://uio-laravel.test
 
-## About Laravel
+## Phase 2: Models & Migrations ✅
+- [x] Migration: semua 14 tabel (users, chart_of_accounts, bahan_baku, kategori_menu, menu_makanan, resep_menu, transaksi_penjualan, detail_transaksi, pembelian_bahan, stock_movement, stock_opname, aset_tetap, transaksi, saldo)
+- [x] Generated columns: nilai_total & nilai_buku di aset_tetap
+- [x] 3 Triggers: create/update/delete saldo otomatis
+- [x] Semua 14 Model dibuat dengan relationships
+- [x] Seeder: ChartOfAccountSeeder (71 akun COA)
+- [x] Seeder: UserSeeder (admin, karyawan, kasir — password: 12345)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Phase 3: Controllers & Routing ✅
+- [x] AuthController (login via username)
+- [x] DashboardController
+- [x] BahanBakuController
+- [x] MenuMakananController
+- [x] KategoriMenuController
+- [x] TransaksiController
+- [x] AsetTetapController
+- [x] StockController
+- [x] LaporanController
+- [x] KaryawanController
+- [x] JurnalController
+- [x] PembelianBahanController
+- [x] Semua Form Requests
+- [x] Routes (web.php) dikonfigurasi lengkap
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Phase 4: Service Layer & Business Logic ✅
+- [x] TransaksiService (createTransaksi, generateNoTransaksi)
+- [x] AsetTetapService (beliAset, catatPenyusutan, lepasAset, penyusutanBulananSemua)
+- [x] StockService (deductStockFromMenu, addStockFromPurchase, addStockManual)
+- [x] LaporanService (harian, bulanan, stok, neraca, labarugi)
+- [x] AppServiceProvider dikonfigurasi
+- [x] Artisan Command: `aset:penyusutan-bulanan`
+- [x] Scheduler dikonfigurasi (monthlyOn tanggal 1)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Phase 5: Views & Frontend ✅
+- [x] Tema pastel ungu (--uio-primary: #8B7EC8)
+- [x] Layout utama (layouts/app.blade.php)
+- [x] Navbar & Footer
+- [x] Views: Auth (login)
+- [x] Views: Dashboard (stat cards + transaksi terakhir)
+- [x] Views: Bahan Baku (index, create, edit, show)
+- [x] Views: Kategori Menu (index, create, edit)
+- [x] Views: Menu Makanan (index, create, edit, show)
+- [x] Views: Transaksi (index, create, show, struk)
+- [x] Views: Jurnal Umum (index, create, edit)
+- [x] Views: Pembelian Bahan (index, create, show)
+- [x] Views: Aset Tetap (index, create, edit, show)
+- [x] Views: Stock (movement, opname)
+- [x] Views: Laporan (harian, bulanan, stok, neraca, labarugi)
+- [x] Views: Karyawan (index, create, edit)
+- [x] Bug fix: SESSION_DRIVER=file
+- [x] Bug fix: auth()->id() mengembalikan integer bukan string
 
-## Learning Laravel
+## Phase 6: Testing
+- [ ] Unit Test: TransaksiServiceTest
+- [ ] Unit Test: AsetTetapServiceTest
+- [ ] Unit Test: StockServiceTest
+- [ ] Feature Test: BahanBakuTest
+- [ ] Feature Test: TransaksiTest
+- [ ] Semua test passing
+- [ ] Coverage > 75%
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Phase 7: Optimasi & Security
+- [ ] Database indexes dicek
+- [ ] Eager loading diterapkan (no N+1)
+- [ ] Caching diimplementasi
+- [ ] Security hardening (.env, CSRF, throttle)
+- [ ] Load testing
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Phase 8: Deployment
+- [ ] Environment production dikonfigurasi
+- [ ] SSL certificate
+- [ ] Monitoring & logging
+- [ ] Dokumentasi final
+- [ ] Go-live ✅

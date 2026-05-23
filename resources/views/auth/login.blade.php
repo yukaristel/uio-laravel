@@ -1,47 +1,130 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — UIO Rumah Makan</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        body {
+            background-color: var(--uio-bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            border-radius: 18px;
+            border: 1px solid var(--uio-border);
+            box-shadow: 0 8px 32px rgba(124,158,135,0.15);
+            background-color: var(--uio-white);
+            overflow: hidden;
+        }
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        .login-header {
+            background-color: var(--uio-primary);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .login-header h1 {
+            color: var(--uio-white);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0.5rem 0 0.2rem;
+        }
+
+        .login-header p {
+            color: rgba(255,255,255,0.80);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .login-icon {
+            width: 64px;
+            height: 64px;
+            background-color: rgba(255,255,255,0.20);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.8rem;
+            font-size: 2rem;
+            color: var(--uio-white);
+        }
+
+        .login-body {
+            padding: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+
+        {{-- Header --}}
+        <div class="login-header">
+            <div class="login-icon">
+                <i class="bi bi-shop"></i>
+            </div>
+            <h1>UIO Rumah Makan</h1>
+            <p>Sistem Informasi Manajemen</p>
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+        {{-- Body --}}
+        <div class="login-body">
 
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
+            @if($errors->any())
+                <div class="alert alert-danger d-flex align-items-center gap-2 py-2">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    {{ $errors->first() }}
+                </div>
             @endif
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+            <form method="POST" action="{{ route('login') }}">
+                @csrf
+
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="bi bi-person"></i> Username
+                    </label>
+                    <input type="text"
+                           name="username"
+                           class="form-control @error('username') is-invalid @enderror"
+                           value="{{ old('username') }}"
+                           placeholder="Masukkan username"
+                           autofocus required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">
+                        <i class="bi bi-lock"></i> Password
+                    </label>
+                    <input type="password"
+                           name="password"
+                           class="form-control"
+                           placeholder="Masukkan password"
+                           required>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
+                        <label class="form-check-label" for="remember" style="font-size:0.88rem;">
+                            Ingat saya
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 py-2">
+                    <i class="bi bi-box-arrow-in-right"></i> Masuk
+                </button>
+
+            </form>
+
         </div>
-    </form>
-</x-guest-layout>
+    </div>
+</body>
+</html>
