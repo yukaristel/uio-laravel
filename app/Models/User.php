@@ -24,16 +24,6 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function getAuthIdentifierName(): string
-    {
-        return 'username';
-    }
-
-    public function getAuthIdentifier()
-    {
-        return $this->id;
-    }
-
     protected function casts(): array
     {
         return [

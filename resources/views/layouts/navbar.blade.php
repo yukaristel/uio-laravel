@@ -130,6 +130,11 @@
                         <li><hr class="dropdown-divider"></li>
                         <li><h6 class="dropdown-header" style="font-size:0.72rem;">AKUNTANSI</h6></li>
                         <li>
+                            <a class="dropdown-item" href="{{ route('laporan.jurnal-transaksi') }}">
+                                <i class="bi bi-journal-bookmark"></i> Jurnal Transaksi
+                            </a>
+                        </li>
+                        <li>
                             <a class="dropdown-item" href="{{ route('laporan.neraca') }}">
                                 <i class="bi bi-journal-text"></i> Neraca
                             </a>

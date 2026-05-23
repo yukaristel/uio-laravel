@@ -61,16 +61,45 @@ class LaporanService
         ];
     }
 
-    public function getNeraca(int $tahun): array
+    public function getJurnalTransaksi(?string $tanggal, ?int $bulan, ?int $tahun, string $mode = 'harian'): array
+    {
+        $query = \App\Models\Transaksi::with('user', 'rekeningDebet', 'rekeningKredit')
+                                       ->orderBy('tgl_transaksi')
+                                       ->orderBy('id');
+
+        if ($mode === 'harian' && $tanggal) {
+            $query->whereDate('tgl_transaksi', $tanggal);
+        } elseif ($mode === 'bulanan' && $bulan && $tahun) {
+            $query->whereMonth('tgl_transaksi', $bulan)
+                  ->whereYear('tgl_transaksi', $tahun);
+        } elseif ($mode === 'tahunan' && $tahun) {
+            $query->whereYear('tgl_transaksi', $tahun);
+        }
+
+        $jurnalList  = $query->get();
+        $totalJumlah = $jurnalList->sum('jumlah');
+
+        return [
+            'jurnal_list'  => $jurnalList,
+            'total_jumlah' => $totalJumlah,
+        ];
+    }
+
+    public function getNeraca(int $bulan, int $tahun): array
     {
         $akunNeraca = ChartOfAccount::where('posisi', 1)->where('status', 'Aktif')->get();
         $result     = [];
 
         foreach ($akunNeraca as $akun) {
-            $saldo = Saldo::where('kode_akun', $akun->kode_akun)
-                          ->where('tahun', $tahun)
-                          ->selectRaw('SUM(debet) as total_debet, SUM(kredit) as total_kredit')
-                          ->first();
+            $query = Saldo::where('kode_akun', $akun->kode_akun)
+                          ->where('tahun', $tahun);
+
+            if ($bulan > 0) {
+                $query->where('bulan', $bulan);
+            }
+
+            $saldo = $query->selectRaw('SUM(debet) as total_debet, SUM(kredit) as total_kredit')
+                           ->first();
 
             $result[] = [
                 'akun'         => $akun,

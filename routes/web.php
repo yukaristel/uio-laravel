@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
         Route::get('stok', [LaporanController::class, 'stok'])->name('stok');
         Route::get('neraca', [LaporanController::class, 'neraca'])->name('neraca');
         Route::get('labarugi', [LaporanController::class, 'labarugi'])->name('labarugi');
+        Route::get('jurnal', [LaporanController::class, 'jurnal'])->name('jurnal-transaksi');
     });
 
     // Karyawan (admin only)

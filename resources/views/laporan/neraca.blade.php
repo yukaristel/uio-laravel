@@ -13,6 +13,17 @@
     <div class="card-body py-2">
         <form method="GET" action="{{ route('laporan.neraca') }}" class="row g-2 align-items-end">
             <div class="col-md-3">
+                <label class="form-label">Bulan</label>
+                <select name="bulan" class="form-select form-select-sm">
+                    <option value="0" {{ $bulan == 0 ? 'selected' : '' }}>-- Semua Bulan --</option>
+                    @foreach(range(1,12) as $b)
+                        <option value="{{ $b }}" {{ $bulan == $b ? 'selected' : '' }}>
+                            {{ DateTime::createFromFormat('!m', $b)->format('F') }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-3">
                 <label class="form-label">Tahun</label>
                 <select name="tahun" class="form-select form-select-sm">
                     @foreach(range(now()->year, now()->year - 3) as $y)
@@ -25,6 +36,12 @@
                     <i class="bi bi-filter"></i> Filter
                 </button>
             </div>
+            <div class="col-md-2">
+                <a href="{{ route('laporan.neraca', array_merge(request()->all(), ['cetak' => 1])) }}"
+                   target="_blank" class="btn btn-outline-secondary btn-sm w-100">
+                    <i class="bi bi-printer"></i> Cetak
+                </a>
+            </div>
         </form>
     </div>
 </div>
@@ -36,6 +53,9 @@
         <div class="card">
             <div class="card-header" style="background: linear-gradient(135deg, #E0DBFF, #EDE8FF);">
                 <strong><i class="bi bi-box-seam"></i> ASET</strong>
+                <span style="float:right; font-size:0.8rem; color: var(--uio-text-muted);">
+                    Periode: {{ $bulan > 0 ? DateTime::createFromFormat('!m', $bulan)->format('F') . ' ' : '' }}{{ $tahun }}
+                </span>
             </div>
             <div class="card-body p-0">
                 <table class="table mb-0" style="font-size:0.85rem;">
