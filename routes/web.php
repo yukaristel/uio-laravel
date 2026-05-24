@@ -13,6 +13,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\PembelianBahanController;
+use App\Http\Controllers\TopupGameController;
 
 // Guest routes
 Route::middleware('guest')->group(function () {
@@ -48,6 +49,9 @@ Route::middleware('auth')->group(function () {
         Route::get('opname', [StockController::class, 'opname'])->name('opname');
         Route::post('opname', [StockController::class, 'storeOpname'])->name('opname.store');
     });
+
+    // Top-Up Game
+    Route::resource('topup-game', TopupGameController::class)->only(['index', 'create', 'store', 'show']);
 
     // Aset Tetap
     Route::resource('aset-tetap', AsetTetapController::class);

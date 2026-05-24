@@ -52,6 +52,13 @@
                                 <i class="bi bi-clipboard-check"></i> Stock Opname
                             </a>
                         </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><h6 class="dropdown-header" style="font-size:0.72rem;">DIGITAL</h6></li>
+                        <li>
+                            <a class="dropdown-item" href="{{ route('topup-game.index') }}">
+                                <i class="bi bi-controller"></i> Riwayat Top-Up Game
+                            </a>
+                        </li>
                     </ul>
                 </li>
 
@@ -160,6 +167,15 @@
                        class="btn d-flex align-items-center gap-2"
                        style="background-color: var(--uio-accent); color: white; font-weight: 600; border-radius: 10px; padding: 0.45rem 1rem; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(200,158,196,0.4);">
                         <i class="bi bi-lightning-charge-fill"></i> POS
+                    </a>
+                </li>
+
+                {{-- Tombol Top-Up Game --}}
+                <li class="nav-item">
+                    <a href="{{ route('topup-game.create') }}"
+                       class="btn d-flex align-items-center gap-2"
+                       style="background-color: #7EC8C8; color: white; font-weight: 600; border-radius: 10px; padding: 0.45rem 1rem; font-size: 0.9rem; box-shadow: 0 2px 8px rgba(126,200,200,0.4);">
+                        <i class="bi bi-controller"></i> Top-Up
                     </a>
                 </li>
 

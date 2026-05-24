@@ -7,12 +7,14 @@ use App\Services\TransaksiService;
 use App\Services\AsetTetapService;
 use App\Services\StockService;
 use App\Services\LaporanService;
+use App\Services\TopupGameService;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->app->singleton(StockService::class);
+        $this->app->singleton(TopupGameService::class);
         $this->app->singleton(AsetTetapService::class);
         $this->app->singleton(TransaksiService::class, function ($app) {
             return new TransaksiService($app->make(StockService::class));
