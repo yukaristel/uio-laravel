@@ -81,12 +81,6 @@ class ChartOfAccountSeeder extends Seeder
             [5,3,2,2,'5.3.02.02','Kerugian Penghapusan Aset','Debet',2],
             [5,3,99,0,'5.3.99.00','Beban Lain-lain','Debet',2],
             [5,3,99,99,'5.3.99.99','Beban Lain-lain','Debet',2],
-            // Pendapatan Digital
-            [4,1,3,0,'4.1.03.00','Pendapatan Penjualan Digital','Kredit',2],
-            [4,1,3,1,'4.1.03.01','Pendapatan Top-Up Game','Kredit',2],
-            // HPP Digital
-            [5,1,2,0,'5.1.02.00','HPP Digital','Debet',2],
-            [5,1,2,1,'5.1.02.01','HPP Top-Up Game','Debet',2],
         ];
 
         foreach ($accounts as $a) {

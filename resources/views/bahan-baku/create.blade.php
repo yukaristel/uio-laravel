@@ -98,7 +98,7 @@
                                        name="harga_beli_per_satuan"
                                        class="form-control @error('harga_beli_per_satuan') is-invalid @enderror"
                                        value="{{ old('harga_beli_per_satuan', 0) }}"
-                                       step="100" min="0">
+                                       step="any">
                                 @error('harga_beli_per_satuan')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

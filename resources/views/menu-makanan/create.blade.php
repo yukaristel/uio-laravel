@@ -85,7 +85,7 @@
                                        name="harga_modal"
                                        class="form-control @error('harga_modal') is-invalid @enderror"
                                        value="{{ old('harga_modal', 0) }}"
-                                       step="100" min="0">
+                                       step="any">
                             </div>
                         </div>
 
@@ -97,7 +97,7 @@
                                        name="harga_jual"
                                        class="form-control @error('harga_jual') is-invalid @enderror"
                                        value="{{ old('harga_jual', 0) }}"
-                                       step="100" min="0">
+                                       step="any">
                                 @error('harga_jual')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -112,7 +112,7 @@
                                        name="margin_keuntungan"
                                        class="form-control"
                                        value="{{ old('margin_keuntungan', 0) }}"
-                                       step="100">
+                                       step="any">
                             </div>
                         </div>
 

@@ -55,4 +55,33 @@ class MenuMakananController extends Controller
         return redirect()->route('menu-makanan.index')
                          ->with('success', 'Menu berhasil dihapus!');
     }
+        
+    public function generateHpp()
+    {
+        $menus = MenuMakanan::with('reseps.bahanBaku')->get();
+    
+        foreach ($menus as $menu) {
+            $totalModal = 0;
+    
+            foreach ($menu->reseps as $resep) {
+                $hargaBahan = $resep->bahanBaku->harga_beli_per_satuan ?? 0;
+                $biayaBahan = $resep->jumlah_bahan * $hargaBahan;
+    
+                // Update biaya bahan di resep
+                $resep->update(['biaya_bahan' => $biayaBahan]);
+    
+                $totalModal += $biayaBahan;
+            }
+    
+            // Update harga modal & margin di menu
+            $menu->update([
+                'harga_modal'       => $totalModal,
+                'margin_keuntungan' => $menu->harga_jual - $totalModal,
+            ]);
+        }
+    
+        return redirect()->route('menu-makanan.index')
+                         ->with('success', 'HPP semua menu berhasil digenerate ulang!');
+    }    
+        
 }

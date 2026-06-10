@@ -67,7 +67,7 @@
                                    name="jumlah_item"
                                    class="form-control @error('jumlah_item') is-invalid @enderror"
                                    value="{{ old('jumlah_item', 0) }}"
-                                   step="0.01" min="0">
+                                   step="any" min="0">
                             @error('jumlah_item')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -83,7 +83,7 @@
                                        id="hargaBeli"
                                        class="form-control @error('harga_beli') is-invalid @enderror"
                                        value="{{ old('harga_beli', 0) }}"
-                                       step="100" min="0">
+                                       step="any" min="0">
                             </div>
                             @error('harga_beli')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -100,7 +100,7 @@
                                        id="hargaJual"
                                        class="form-control @error('harga_jual') is-invalid @enderror"
                                        value="{{ old('harga_jual', 0) }}"
-                                       step="100" min="0">
+                                       step="any" min="0">
                             </div>
                             @error('harga_jual')
                                 <div class="invalid-feedback">{{ $message }}</div>

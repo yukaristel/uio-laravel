@@ -97,7 +97,7 @@
                                        id="totalHargaInput"
                                        class="form-control"
                                        value="{{ old('total_harga', 0) }}"
-                                       step="100" min="0">
+                                       step="any">
                             </div>
                         </div>
 

@@ -1,0 +1,35 @@
+[23-May-2026 08:05:32 UTC] PHP Fatal error:  Uncaught ReflectionException: Class "request" does not exist in /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php:1125
+Stack trace:
+#0 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php(1125): ReflectionClass->__construct('request')
+#1 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php(936): Illuminate\Container\Container->build('request')
+#2 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate\Container\Container->resolve('request', Array, true)
+#3 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate\Foundation\Application->resolve('request', Array)
+#4 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate\Container\Container->make('request', Array)
+#5 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php(1810): Illuminate\Foundation\Application->make('request')
+#6 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(221): Illuminate\Container\Container->offsetGet('request')
+#7 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(198): Illuminate\Foundation\Bootstrap\HandleExceptions->renderHttpResponse(Object(Illuminate\Database\UniqueConstraintViolationException))
+#8 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate\Foundation\Bootstrap\HandleExceptions->handleException(Object(Illuminate\Database\UniqueConstraintViolationException))
+#9 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}(Object(Illuminate\Database\UniqueConstraintViolationException))
+#10 {main}
+
+Next Illuminate\Contracts\Container\BindingResolutionException: Target class [request] does not exist. in /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php:1127
+Stack trace:
+#0 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php(936): Illuminate\Container\Container->build('request')
+#1 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1078): Illuminate\Container\Container->resolve('request', Array, true)
+#2 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php(864): Illuminate\Foundation\Application->resolve('request', Array)
+#3 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1058): Illuminate\Container\Container->make('request', Array)
+#4 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php(1810): Illuminate\Foundation\Application->make('request')
+#5 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(221): Illuminate\Container\Container->offsetGet('request')
+#6 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(198): Illuminate\Foundation\Bootstrap\HandleExceptions->renderHttpResponse(Object(Illuminate\Database\UniqueConstraintViolationException))
+#7 /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(258): Illuminate\Foundation\Bootstrap\HandleExceptions->handleException(Object(Illuminate\Database\UniqueConstraintViolationException))
+#8 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}(Object(Illuminate\Database\UniqueConstraintViolationException))
+#9 {main}
+  thrown in /home2/lpdbalii/public_html/uo/vendor/laravel/framework/src/Illuminate/Container/Container.php on line 1127
+[23-May-2026 08:07:59 UTC] PHP Fatal error:  Uncaught Error: Class "Artisan" not found in /home2/lpdbalii/public_html/uo/public/setup.php:3
+Stack trace:
+#0 {main}
+  thrown in /home2/lpdbalii/public_html/uo/public/setup.php on line 3
+[23-May-2026 08:08:37 UTC] PHP Fatal error:  Uncaught Error: Class "Artisan" not found in /home2/lpdbalii/public_html/uo/public/setup.php:5
+Stack trace:
+#0 {main}
+  thrown in /home2/lpdbalii/public_html/uo/public/setup.php on line 5

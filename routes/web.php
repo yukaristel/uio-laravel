@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('kategori-menu', KategoriMenuController::class)->except(['show']);
 
     // Menu Makanan
+    Route::post('menu-makanan/generate-hpp', [MenuMakananController::class, 'generateHpp'])->name('menu-makanan.generate-hpp');
     Route::resource('menu-makanan', MenuMakananController::class);
 
     // Transaksi Penjualan
