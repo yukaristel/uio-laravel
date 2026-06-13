@@ -23,7 +23,7 @@ class TransaksiController extends Controller
 
     public function create()
     {
-        $menuList = MenuMakanan::with('kategori')
+        $menuList = MenuMakanan::with(['kategori', 'hargaGrosirs'])
                                 ->where('status', 'tersedia')
                                 ->get();
         return view('transaksi.create', compact('menuList'));

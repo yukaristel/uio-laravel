@@ -35,7 +35,8 @@
                                     @foreach($menuList as $menu)
                                         <option value="{{ $menu->id }}"
                                                 data-harga="{{ $menu->harga_jual }}"
-                                                data-modal="{{ $menu->harga_modal }}">
+                                                data-modal="{{ $menu->harga_modal }}"
+                                                data-grosir='@json($menu->hargaGrosirs->map(fn($g) => ["min_qty" => (int)$g->min_qty, "harga" => (float)$g->harga_total])->values())'>
                                             {{ $menu->nama_menu }} — Rp {{ number_format($menu->harga_jual, 0, ',', '.') }}
                                         </option>
                                     @endforeach
@@ -52,12 +53,14 @@
                                 <input type="number" name="details[0][harga_satuan]"
                                        class="form-control harga-input"
                                        value="0" readonly>
+                                <small class="badge-hemat text-success" style="display:none;font-size:0.7rem;"></small>
                             </div>
                             <div class="col-md-2">
-                                <label class="form-label">Modal</label>
-                                <input type="number" name="details[0][harga_modal_satuan]"
-                                       class="form-control modal-input"
-                                       value="0" readonly>
+                                <label class="form-label">Subtotal</label>
+                                <input type="text"
+                                       class="form-control subtotal-display"
+                                       value="Rp 0" readonly tabindex="-1"
+                                       style="background: var(--uio-bg);">
                             </div>
                             <div class="col-md-1">
                                 <label class="form-label">&nbsp;</label>
@@ -184,18 +187,76 @@ function isTunai() {
     return document.getElementById('metodePembayaran').value === 'tunai';
 }
 
+function getTiersForRow(row) {
+    const sel = row.querySelector('.menu-select');
+    const opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.dataset.grosir) return [];
+    try {
+        return JSON.parse(opt.dataset.grosir) || [];
+    } catch (e) { return []; }
+}
+
+function getTierTertinggi(tiers, qty) {
+    if (!tiers || qty < 2) return null;
+    const valid = tiers.filter(t => qty >= t.min_qty);
+    if (valid.length === 0) return null;
+    return valid.reduce((best, t) => (t.min_qty > best.min_qty ? t : best));
+}
+
+function updateRowHarga(row) {
+    const sel    = row.querySelector('.menu-select');
+    const opt    = sel.options[sel.selectedIndex];
+    const jumlah = parseInt(row.querySelector('.jumlah-input').value) || 0;
+
+    const hargaNormal = parseFloat(opt?.dataset.harga) || 0;
+    const tiers       = getTiersForRow(row);
+    const tier        = getTierTertinggi(tiers, jumlah);
+
+    let subtotal, hargaSatuan, badgeText = null;
+
+    if (tier && jumlah >= 2) {
+        const bundleCount = Math.floor(jumlah / tier.min_qty);
+        const sisaQty     = jumlah % tier.min_qty;
+        subtotal   = bundleCount * tier.harga + sisaQty * hargaNormal;
+        hargaSatuan = subtotal / jumlah;
+        const subtotalNormal = jumlah * hargaNormal;
+        const hemat = subtotalNormal - subtotal;
+        if (hemat > 0) {
+            const parts = [];
+            if (bundleCount > 0) parts.push(bundleCount + '× bundle @' + tier.min_qty);
+            if (sisaQty > 0)     parts.push(sisaQty + '× normal');
+            badgeText = '🎉 Hemat ' + formatRp(hemat) + ' (' + parts.join(' + ') + ')';
+        }
+    } else {
+        subtotal    = jumlah * hargaNormal;
+        hargaSatuan = hargaNormal;
+    }
+
+    row.querySelector('.harga-input').value = hargaSatuan.toFixed(2);
+    row.querySelector('.subtotal-display').value = formatRp(subtotal);
+
+    const badge = row.querySelector('.badge-hemat');
+    if (badgeText) {
+        badge.textContent = badgeText;
+        badge.style.display = '';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
 function hitungTotal() {
     let totalHarga = 0, totalModal = 0;
 
     document.querySelectorAll('.item-row').forEach(row => {
+        const sel    = row.querySelector('.menu-select');
+        const opt    = sel.options[sel.selectedIndex];
         const jumlah = parseInt(row.querySelector('.jumlah-input').value) || 0;
-        const harga  = parseInt(row.querySelector('.harga-input').value) || 0;
-        const modal  = parseInt(row.querySelector('.modal-input').value) || 0;
+        const harga  = parseFloat(row.querySelector('.harga-input').value) || 0;
+        const modal  = parseFloat(opt?.dataset.modal) || 0;
         totalHarga  += jumlah * harga;
         totalModal  += jumlah * modal;
     });
 
-    // Update ringkasan
     document.getElementById('totalHarga').textContent = formatRp(totalHarga);
     document.getElementById('totalModal').textContent = formatRp(totalModal);
 
@@ -229,13 +290,14 @@ function toggleMetode() {
 
 function bindRow(row) {
     row.querySelector('.menu-select').addEventListener('change', function() {
-        const opt = this.options[this.selectedIndex];
-        row.querySelector('.harga-input').value = opt.dataset.harga || 0;
-        row.querySelector('.modal-input').value = opt.dataset.modal || 0;
+        updateRowHarga(row);
         hitungTotal();
     });
 
-    row.querySelector('.jumlah-input').addEventListener('input', hitungTotal);
+    row.querySelector('.jumlah-input').addEventListener('input', function() {
+        updateRowHarga(row);
+        hitungTotal();
+    });
 
     row.querySelector('.btn-hapus-item').addEventListener('click', function() {
         if (document.querySelectorAll('.item-row').length > 1) {
@@ -245,8 +307,8 @@ function bindRow(row) {
     });
 }
 
-// Init
 document.querySelectorAll('.item-row').forEach(bindRow);
+document.querySelectorAll('.item-row').forEach(updateRowHarga);
 
 document.getElementById('btnTambahItem').addEventListener('click', function() {
     const template = document.querySelector('.item-row').cloneNode(true);
@@ -254,7 +316,11 @@ document.getElementById('btnTambahItem').addEventListener('click', function() {
         const name = el.getAttribute('name');
         if (name) el.setAttribute('name', name.replace(/\[\d+\]/, `[${itemIndex}]`));
         if (el.tagName === 'SELECT') el.selectedIndex = 0;
-        else if (!el.readOnly) el.value = el.type === 'number' ? (el.classList.contains('jumlah-input') ? 1 : 0) : '';
+        else if (el.classList.contains('harga-input')) el.value = 0;
+        else if (el.classList.contains('jumlah-input')) el.value = 1;
+        else if (el.classList.contains('subtotal-display')) el.value = 'Rp 0';
+        else if (el.classList.contains('badge-hemat')) el.style.display = 'none';
+        else if (!el.readOnly) el.value = '';
         else el.value = 0;
     });
     document.getElementById('itemList').appendChild(template);

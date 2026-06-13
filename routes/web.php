@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
 
     // Menu Makanan
     Route::post('menu-makanan/generate-hpp', [MenuMakananController::class, 'generateHpp'])->name('menu-makanan.generate-hpp');
+    Route::delete('menu-makanan/{menu_makanan}/resep/{resep}', [MenuMakananController::class, 'destroyResep'])->name('menu-makanan.resep.destroy');
     Route::resource('menu-makanan', MenuMakananController::class);
 
     // Transaksi Penjualan

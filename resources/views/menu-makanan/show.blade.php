@@ -74,6 +74,9 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span><i class="bi bi-journal-text"></i> Resep / Komposisi Bahan</span>
+                <a href="{{ route('menu-makanan.edit', $menuMakanan) }}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-pencil"></i> Edit Resep
+                </a>
             </div>
             <div class="card-body p-0">
                 <table class="table mb-0" style="font-size:0.88rem;">
@@ -83,6 +86,7 @@
                             <th>Jumlah</th>
                             <th>Satuan</th>
                             <th>Biaya Bahan</th>
+                            <th style="width:60px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -92,10 +96,21 @@
                             <td>{{ number_format($resep->jumlah_bahan, 2, ',', '.') }}</td>
                             <td><span class="badge badge-uio-info">{{ $resep->satuan }}</span></td>
                             <td>Rp {{ number_format($resep->biaya_bahan, 0, ',', '.') }}</td>
+                            <td>
+                                <form method="POST"
+                                      action="{{ route('menu-makanan.resep.destroy', [$menuMakanan, $resep]) }}"
+                                      onsubmit="return confirm('Hapus bahan {{ $resep->bahanBaku->nama_bahan }} dari resep?')"
+                                      style="display:inline;">
+                                    @csrf @method('DELETE')
+                                    <button class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="4" class="text-center py-4" style="color: var(--uio-text-muted);">
+                            <td colspan="5" class="text-center py-4" style="color: var(--uio-text-muted);">
                                 <i class="bi bi-inbox"></i> Belum ada resep untuk menu ini
                             </td>
                         </tr>
@@ -105,7 +120,7 @@
                     <tfoot>
                         <tr style="background: var(--uio-bg);">
                             <td colspan="3" class="text-end"><strong>Total Biaya Bahan</strong></td>
-                            <td>
+                            <td colspan="2">
                                 <strong style="color: var(--uio-primary-dark);">
                                     Rp {{ number_format($menuMakanan->reseps->sum('biaya_bahan'), 0, ',', '.') }}
                                 </strong>

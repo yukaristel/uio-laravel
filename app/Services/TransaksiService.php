@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\TransaksiPenjualan;
 use App\Models\DetailTransaksi;
 use App\Models\Transaksi;
+use App\Models\MenuMakanan;
 use App\Models\ChartOfAccount;
 use Illuminate\Support\Facades\DB;
 
@@ -43,22 +44,43 @@ class TransaksiService
         return DB::transaction(function () use ($data) {
             $isTunai = $data['metode_pembayaran'] === 'tunai';
 
-            // 1. Hitung total normal (dari item)
+            $menus = MenuMakanan::with('hargaGrosirs')
+                                ->whereIn('id', collect($data['details'])->pluck('menu_id'))
+                                ->get()
+                                ->keyBy('id');
+
             $totalHargaNormal = 0;
             $totalModal       = 0;
+            $resolvedDetails  = [];
 
             foreach ($data['details'] as $detail) {
-                $totalHargaNormal += $detail['jumlah'] * $detail['harga_satuan'];
-                $totalModal       += $detail['jumlah'] * $detail['harga_modal_satuan'];
+                $menu   = $menus->get($detail['menu_id']);
+                $qty    = (int) $detail['jumlah'];
+                $modal  = (float) ($detail['harga_modal_satuan'] ?? ($menu->harga_modal ?? 0));
+
+                $calc   = $menu ? $menu->hitungSubtotalDenganGrosir($qty)
+                                : ['subtotal' => $qty * (float) ($detail['harga_satuan'] ?? 0), 'hemat' => 0];
+                $subtotal  = $calc['subtotal'];
+                $hargaSat  = $qty > 0 ? round($subtotal / $qty, 2) : 0;
+
+                $totalHargaNormal += $subtotal;
+                $totalModal       += $qty * $modal;
+
+                $resolvedDetails[] = [
+                    'menu_id'            => (int) $detail['menu_id'],
+                    'jumlah'             => $qty,
+                    'harga_satuan'       => $hargaSat,
+                    'harga_modal_satuan' => $modal,
+                    'subtotal'           => $subtotal,
+                    'subtotal_modal'     => $qty * $modal,
+                ];
             }
 
-            // 2. Total harga final & kembalian
             if ($isTunai) {
                 $totalHarga  = $totalHargaNormal;
                 $uangBayar   = $data['uang_bayar'];
                 $uangKembali = $uangBayar - $totalHarga;
             } else {
-                // Non-tunai: total = nominal yang diterima
                 $totalHarga  = $data['nominal_diterima'];
                 $uangBayar   = $totalHarga;
                 $uangKembali = 0;
@@ -66,7 +88,6 @@ class TransaksiService
 
             $totalKeuntungan = $totalHarga - $totalModal;
 
-            // 3. Catat transaksi penjualan
             $transaksi = TransaksiPenjualan::create([
                 'no_transaksi'      => $this->generateNoTransaksi(),
                 'tanggal_transaksi' => $data['tanggal_transaksi'],
@@ -79,16 +100,15 @@ class TransaksiService
                 'user_id'           => auth()->id(),
             ]);
 
-            // 4. Catat detail & kurangi stok
-            foreach ($data['details'] as $detail) {
+            foreach ($resolvedDetails as $detail) {
                 DetailTransaksi::create([
                     'transaksi_id'       => $transaksi->id,
                     'menu_id'            => $detail['menu_id'],
                     'jumlah'             => $detail['jumlah'],
                     'harga_satuan'       => $detail['harga_satuan'],
                     'harga_modal_satuan' => $detail['harga_modal_satuan'],
-                    'subtotal'           => $detail['jumlah'] * $detail['harga_satuan'],
-                    'subtotal_modal'     => $detail['jumlah'] * $detail['harga_modal_satuan'],
+                    'subtotal'           => $detail['subtotal'],
+                    'subtotal_modal'     => $detail['subtotal_modal'],
                 ]);
 
                 $this->stockService->deductStockFromMenu(
@@ -98,7 +118,6 @@ class TransaksiService
                 );
             }
 
-            // 5. Catat jurnal akuntansi
             Transaksi::create([
                 'tgl_transaksi'        => now()->toDateString(),
                 'rekening_debet'       => $this->getRekeningKas($data['metode_pembayaran']),
