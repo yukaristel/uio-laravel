@@ -18,67 +18,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'username' => 'required|string',array:5 [▼ // app/Http/Controllers/AuthController.php:28
-  "attempt_result" => true
-  "auth_check" => true
-  "auth_user" => App\Models
-\
-User {
-#1553 ▼
-    #connection: "mysql"
-    #table: "users"
-    #primaryKey: "id"
-    #keyType: "int"
-    +incrementing: true
-    #with: []
-    #withCount: []
-    +preventsLazyLoading: false
-    #perPage: 15
-    +exists: true
-    +wasRecentlyCreated: false
-    #escapeWhenCastingToString: false
-    #attributes: array:10 [▶]
-    #original: array:10 [▶]
-    #changes: []
-    #previous: []
-    #casts: array:1 [▶]
-    #classCastCache: []
-    #attributeCastCache: []
-    #dateFormat: null
-    #appends: []
-    #dispatchesEvents: []
-    #observables: []
-    #relations: []
-    #touches: []
-    #relationAutoloadCallback: null
-    #relationAutoloadContext: null
-    +timestamps: true
-    +usesUniqueIds: false
-    #hidden: array:2 [▶]
-    #visible: []
-    #fillable: array:5 [▼
-      0 => "username"
-      1 => "nama_lengkap"
-      2 => "email"
-      3 => "password"
-      4 => "role"
-    ]
-    #guarded: array:1 [▶]
-    #authPasswordName: "password"
-    #rememberTokenName: "remember_token"
-    -roleClass: null
-    -permissionClass: null
-    -wildcardClass: null
-    -wildcardPermissionsIndex: ? array
-  }
-  "session_id" => "oXis3x4rRflqY2tFHyv8z0oO3NKBeR8l9sP9Auej"
-  "credentials" => array:2 [▼
-    "username" => "admin"
-    "password" => "12345"
-  ]
-]
-
-
+            'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
