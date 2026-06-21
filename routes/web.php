@@ -14,6 +14,7 @@ use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\PembelianBahanController;
 use App\Http\Controllers\TopupGameController;
+use App\Http\Controllers\CashOnHandController;
 
 // Guest routes
 Route::middleware('guest')->group(function () {
@@ -75,6 +76,9 @@ Route::middleware('auth')->group(function () {
 
     // Jurnal Umum
     Route::resource('jurnal', JurnalController::class)->except(['show']);
+
+    // Cash on Hand
+    Route::resource('cash-on-hand', CashOnHandController::class)->only(['index', 'store'])->names('cash-on-hand');
 
     // Logout
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');

@@ -109,7 +109,7 @@
                                        name="harsat"
                                        class="form-control @error('harsat') is-invalid @enderror"
                                        value="{{ old('harsat', 0) }}"
-                                       step="1000" min="0">
+                                       step="any" min="0">
                                 @error('harsat')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

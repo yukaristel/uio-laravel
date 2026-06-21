@@ -22,7 +22,7 @@ class StoreTransaksiRequest extends FormRequest
             'details.*.menu_id'            => 'required|exists:menu_makanan,id',
             'details.*.jumlah'             => 'required|integer|min:1',
             'details.*.harga_satuan'       => 'required|numeric|min:0',
-            'details.*.harga_modal_satuan' => 'required|numeric|min:0',
+            'details.*.harga_modal_satuan' => 'nullable|numeric|min:0',
         ];
     }
 

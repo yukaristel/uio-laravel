@@ -151,7 +151,7 @@
                             <div class="input-group">
                                 <span class="input-group-text" style="background: var(--uio-bg); border-color: var(--uio-border);">Rp</span>
                                 <input type="number" name="harga_jual" class="form-control"
-                                       value="0" step="1000" min="0">
+                                       value="0" step="any" min="0">
                             </div>
                         </div>
                         <div class="col-md-4">

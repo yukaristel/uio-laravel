@@ -48,7 +48,7 @@
                                        name="jumlah"
                                        class="form-control @error('jumlah') is-invalid @enderror"
                                        value="{{ old('jumlah', $jurnal->jumlah) }}"
-                                       step="1000" min="1">
+                                       step="any" min="1">
                                 @error('jumlah')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

@@ -168,6 +168,45 @@
                     </tr>
                 </table>
             </div>
+
+            {{-- Keypad Tunai --}}
+            <div id="keypadSection" style="display:none;">
+                <hr style="border-color: var(--uio-border);" class="mt-3 mb-2">
+                <div class="d-grid gap-1">
+                    <div class="row g-1">
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="7">7</button></div>
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="8">8</button></div>
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="9">9</button></div>
+                    </div>
+                    <div class="row g-1">
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="4">4</button></div>
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="5">5</button></div>
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="6">6</button></div>
+                    </div>
+                    <div class="row g-1">
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="1">1</button></div>
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="2">2</button></div>
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="3">3</button></div>
+                    </div>
+                    <div class="row g-1">
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="00">00</button></div>
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="0">0</button></div>
+                        <div class="col-4"><button type="button" class="btn btn-outline-primary w-100 key-btn" data-val="000">000</button></div>
+                    </div>
+                    <div class="row g-1 mt-2">
+                        <div class="col-6">
+                            <button type="button" id="btnKeypadReset" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-arrow-counterclockwise"></i> Reset
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" id="btnKeypadSubmit" class="btn btn-primary w-100">
+                                <i class="bi bi-check-circle"></i> Proses Transaksi
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -178,9 +217,30 @@
 @push('scripts')
 <script>
 let itemIndex = 1;
+let uangBayarManual = false;
+let keypadFresh = true;
 
 function formatRp(val) {
     return 'Rp ' + parseInt(val || 0).toLocaleString('id-ID');
+}
+
+function getTotalHarga() {
+    let total = 0;
+    document.querySelectorAll('.item-row').forEach(row => {
+        const sel    = row.querySelector('.menu-select');
+        const opt    = sel.options[sel.selectedIndex];
+        const jumlah = parseInt(row.querySelector('.jumlah-input').value) || 0;
+        const harga  = parseFloat(row.querySelector('.harga-input').value) || 0;
+        const modal  = parseFloat(opt?.dataset.modal) || 0;
+        total += jumlah * harga;
+    });
+    return total;
+}
+
+function syncUangBayarAuto() {
+    if (!isTunai() || uangBayarManual) return;
+    const el = document.getElementById('uangBayar');
+    if (el) el.value = getTotalHarga();
 }
 
 function isTunai() {
@@ -260,6 +320,8 @@ function hitungTotal() {
     document.getElementById('totalHarga').textContent = formatRp(totalHarga);
     document.getElementById('totalModal').textContent = formatRp(totalModal);
 
+    syncUangBayarAuto();
+
     if (isTunai()) {
         const uangBayar  = parseInt(document.getElementById('uangBayar').value) || 0;
         const keuntungan = totalHarga - totalModal;
@@ -285,6 +347,12 @@ function toggleMetode() {
     const tunai = isTunai();
     document.getElementById('sectionTunai').style.display    = tunai ? 'block' : 'none';
     document.getElementById('sectionNonTunai').style.display = tunai ? 'none' : 'block';
+    document.getElementById('keypadSection').style.display  = tunai ? 'block' : 'none';
+    if (tunai) {
+        uangBayarManual = false;
+        keypadFresh = true;
+        syncUangBayarAuto();
+    }
     hitungTotal();
 }
 
@@ -329,7 +397,41 @@ document.getElementById('btnTambahItem').addEventListener('click', function() {
 });
 
 document.getElementById('metodePembayaran').addEventListener('change', toggleMetode);
-document.getElementById('uangBayar').addEventListener('input', hitungTotal);
+document.getElementById('uangBayar').addEventListener('input', function() {
+    uangBayarManual = true;
+    keypadFresh = false;
+    hitungTotal();
+});
 document.getElementById('nominalDiterima').addEventListener('input', hitungTotal);
+
+document.querySelectorAll('.key-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        uangBayarManual = true;
+        const el = document.getElementById('uangBayar');
+        const cur = el.value || '0';
+        if (keypadFresh) {
+            el.value = btn.dataset.val;
+            keypadFresh = false;
+        } else {
+            el.value = (parseInt(cur) === 0 && btn.dataset.val !== '00' && btn.dataset.val !== '000')
+                ? btn.dataset.val
+                : (cur + btn.dataset.val);
+        }
+        hitungTotal();
+    });
+});
+
+document.getElementById('btnKeypadReset').addEventListener('click', function() {
+    uangBayarManual = false;
+    keypadFresh = true;
+    syncUangBayarAuto();
+    hitungTotal();
+});
+
+document.getElementById('btnKeypadSubmit').addEventListener('click', function() {
+    document.getElementById('formTransaksi').submit();
+});
+
+toggleMetode();
 </script>
 @endpush

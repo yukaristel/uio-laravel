@@ -105,12 +105,17 @@
                 {{-- Keuangan --}}
                 @if(in_array(auth()->user()->role, ['admin', 'karyawan']))
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {{ request()->routeIs('jurnal.*','laporan.*') ? 'active' : '' }}"
+                    <a class="nav-link dropdown-toggle {{ request()->routeIs('jurnal.*','laporan.*','cash-on-hand.*') ? 'active' : '' }}"
                        href="#" role="button" data-bs-toggle="dropdown">
                         <i class="bi bi-cash-stack"></i> Keuangan
                     </a>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header" style="font-size:0.72rem;">JURNAL</h6></li>
+                        <li>
+                            <a class="dropdown-item {{ request()->routeIs('cash-on-hand.*') ? 'active' : '' }}" href="{{ route('cash-on-hand.index') }}">
+                                <i class="bi bi-cash-coin"></i> Cash on Hand
+                            </a>
+                        </li>
                         <li>
                             <a class="dropdown-item" href="{{ route('jurnal.index') }}">
                                 <i class="bi bi-journal-plus"></i> Jurnal Umum
